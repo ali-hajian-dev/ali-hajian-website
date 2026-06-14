@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>علی حاجیان | متخصص فناوری</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080C14;
+      --surface:  #0F1623;
+      --card:     #141C2B;
+      --violet:   #7B5CF5;
+      --violet2:  #5B3FD4;
+      --gold:     #F0A500;
+      --cyan:     #22D4BF;
+      --text:     #E8EBF4;
+      --muted:    #7A849A;
+      --border:   rgba(123,92,245,.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS BACKGROUND ── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 18px 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(8,12,20,.7);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.25rem; font-weight: 900; letter-spacing: -.02em;
+      background: linear-gradient(135deg, var(--violet), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: .92rem; font-weight: 500;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 120px 5% 60px;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(123,92,245,.15);
+      border: 1px solid var(--border);
+      color: var(--violet); border-radius: 100px;
+      font-size: .8rem; font-weight: 500;
+      padding: 6px 18px; margin-bottom: 28px;
+      letter-spacing: .06em;
+      animation: fadeDown .7s ease both;
+    }
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -.04em;
+      animation: fadeDown .7s .1s ease both;
+    }
+    h1 .name-accent {
+      background: linear-gradient(135deg, var(--violet) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      margin-top: 22px;
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      color: var(--muted); max-width: 560px;
+      line-height: 1.75;
+      animation: fadeDown .7s .2s ease both;
+    }
+    .hero-cta {
+      margin-top: 42px;
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      animation: fadeDown .7s .3s ease both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 14px 30px; border-radius: 12px;
+      font-family: inherit; font-size: .95rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover { transform: translateY(-3px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet), var(--violet2));
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(123,92,245,.4);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 40px rgba(123,92,245,.55); }
+    .btn-ghost {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.1); }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 36px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: .78rem;
+      animation: fadeDown .7s .5s ease both;
+    }
+    .scroll-dot {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--violet), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%,100% { transform: scaleY(1); opacity:.6; }
+      50%      { transform: scaleY(.5); opacity:.2; }
+    }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; padding: 100px 5%; }
+    .section-label {
+      font-size: .78rem; font-weight: 600; letter-spacing: .12em;
+      color: var(--violet); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900;
+      letter-spacing: -.03em; line-height: 1.15;
+    }
+    .section-title span { color: var(--cyan); }
+
+    /* ── SERVICES ── */
+    #services .inner { max-width: 1100px; margin: 0 auto; }
+    .services-head { margin-bottom: 56px; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      cursor: default;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(123,92,245,.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+    .service-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(123,92,245,.2), rgba(34,212,191,.1));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 20px;
+    }
+    .service-card h3 {
+      font-size: 1.08rem; font-weight: 700; margin-bottom: 10px;
+    }
+    .service-card p { color: var(--muted); font-size: .88rem; line-height: 1.7; }
+
+    /* ── ABOUT ── */
+    #about {
+      background: linear-gradient(180deg, transparent, rgba(123,92,245,.04), transparent);
+    }
+    #about .inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted); line-height: 1.85; font-size: .97rem;
+      margin-top: 16px;
+    }
+    .stats-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 24px 22px; text-align: center;
+    }
+    .stat-num {
+      font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--violet), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { color: var(--muted); font-size: .8rem; margin-top: 4px; }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center;
+    }
+    #contact .inner { max-width: 600px; margin: 0 auto; }
+    #contact .section-title { margin-bottom: 14px; }
+    #contact p { color: var(--muted); line-height: 1.75; margin-bottom: 38px; }
+    .contact-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px;
+      display: flex; flex-direction: column; align-items: center; gap: 22px;
+    }
+    .telegram-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, #5B3FD4, #7B5CF5);
+      color: #fff; border-radius: 14px;
+      padding: 16px 36px; font-size: 1rem; font-weight: 700;
+      text-decoration: none;
+      transition: transform .25s, box-shadow .25s;
+      box-shadow: 0 8px 30px rgba(91,63,212,.4);
+    }
+    .telegram-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(91,63,212,.55);
+    }
+    .telegram-btn svg { width: 22px; height: 22px; }
+    .username-tag {
+      color: var(--muted); font-size: .85rem;
+      letter-spacing: .04em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 5%;
+      text-align: center;
+      color: var(--muted); font-size: .82rem;
+    }
+    footer span { color: var(--violet); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+      #about .inner { grid-template-columns: 1fr; gap: 40px; }
+      .stats-col { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">علی حاجیان</div>
+  <ul class="nav-links">
+    <li><a href="#services">خدمات</a></li>
+    <li><a href="#about">درباره من</a></li>
+    <li><a href="#contact">تماس</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-tag">✦ آماده همکاری با شما</div>
+  <h1>سلام، من<br/><span class="name-accent">علی حاجیان</span> هستم</h1>
+  <p class="hero-sub">
+    متخصص فناوری و توسعه‌دهنده خلاق — از ساخت ربات تا طراحی و پردازش صدا، راه‌حل‌های دیجیتال سفارشی برای کسب‌وکار شما می‌سازم.
+  </p>
+  <div class="hero-cta">
+    <a href="#services" class="btn btn-primary">مشاهده خدمات ↓</a>
+    <a href="#contact" class="btn btn-ghost">تماس با من</a>
+  </div>
+  <div class="scroll-hint">
+    <span>اسکرول کنید</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="inner">
+    <div class="services-head">
+      <div class="section-label">خدمات من</div>
+      <h2 class="section-title">چه کارهایی<br/><span>انجام می‌دهم؟</span></h2>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card reveal">
+        <div class="service-icon">🤖</div>
+        <h3>ساخت ربات تلگرام و بله</h3>
+        <p>ربات‌های حرفه‌ای و اتوماتیک برای پلتفرم‌های تلگرام و بله، متناسب با نیاز کسب‌وکار شما.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🔌</div>
+        <h3>یکپارچه‌سازی API</h3>
+        <p>اتصال و پیاده‌سازی هر نوع API — از سرویس‌های ابری گرفته تا پلتفرم‌های پیام‌رسان و داده.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🎙️</div>
+        <h3>متن به صوت و صوت به متن</h3>
+        <p>تبدیل متن فارسی به صدا و بالعکس با کیفیت بالا — مناسب برای اپلیکیشن، پادکست و محتوا.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">📝</div>
+        <h3>زیرنویس برای ویدیو</h3>
+        <p>تولید زیرنویس دقیق و همزمان برای ویدیوهای فارسی و خارجی به‌صورت اتوماتیک.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🎵</div>
+        <h3>ساخت آهنگ فارسی</h3>
+        <p>تولید موزیک فارسی با ابزارهای مدرن — از ملودی‌سازی تا تنظیم و میکس نهایی.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🎨</div>
+        <h3>طراحی لوگو</h3>
+        <p>طراحی هویت بصری منحصربه‌فرد و لوگوی حرفه‌ای برای برند شما.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">📊</div>
+        <h3>پردازش و تحلیل داده</h3>
+        <p>تحلیل، خلاصه‌سازی و استخراج اطلاعات از داده‌های مختلف به‌صورت حرفه‌ای و دقیق.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">⚡</div>
+        <h3>سایر خدمات دیجیتال</h3>
+        <p>هر چیزی که در حوزه فناوری و اتوماسیون نیاز دارید — با هم صحبت کنیم!</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="inner">
+    <div class="about-text reveal">
+      <div class="section-label">درباره من</div>
+      <h2 class="section-title">کمی بیشتر<br/><span>بشناسیدم</span></h2>
+      <p>
+        من علی حاجیان هستم، توسعه‌دهنده و متخصص فناوری که به ساخت راه‌حل‌های دیجیتال خلاقانه علاقه دارم. از توسعه ربات‌های پیام‌رسان گرفته تا پردازش صدا و طراحی — هر پروژه را با دقت و کیفیت بالا تحویل می‌دهم.
+      </p>
+      <p>
+        هدفم ساده‌سازی کارها با فناوری و کمک به رشد کسب‌وکارهاست. اگر ایده‌ای دارید، بیایید با هم آن را به واقعیت تبدیل کنیم.
+      </p>
+    </div>
+    <div class="stats-col reveal">
+      <div class="stat-box">
+        <div class="stat-num">+۵۰</div>
+        <div class="stat-label">پروژه انجام‌شده</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">۱۰۰٪</div>
+        <div class="stat-label">رضایت مشتری</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">+۸</div>
+        <div class="stat-label">حوزه تخصصی</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">۲۴/۷</div>
+        <div class="stat-label">در دسترس</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="inner reveal">
+    <div class="section-label">تماس با من</div>
+    <h2 class="section-title">بیایید با هم<br/><span>کار کنیم</span></h2>
+    <p>
+      پروژه یا ایده‌ای دارید؟ خوشحال می‌شوم بشنوم. از طریق پیام‌رسان بله با من در ارتباط باشید.
+    </p>
+    <div class="contact-card">
+      <a href="https://ble.ir/ali_1391_11_12_IRAN" target="_blank" class="telegram-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.93 6.708l-1.665 7.85c-.122.543-.446.674-.903.42l-2.496-1.84-1.204 1.158c-.133.133-.244.244-.5.244l.178-2.528 4.601-4.157c.2-.178-.044-.277-.308-.099L7.93 13.94l-2.45-.766c-.532-.166-.543-.532.111-.788l9.566-3.688c.443-.16.831.108.773.01z"/>
+        </svg>
+        ارتباط در بله
+      </a>
+      <div class="username-tag">@ali_1391_11_12_IRAN</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  ساخته شده با ❤️ توسط <span>علی حاجیان</span> — تمام حقوق محفوظ است | بله: @ali_1391_11_12_IRAN
+</footer>
+
+<script>
+// ── Particle canvas ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function Particle() {
+  this.x = Math.random() * W;
+  this.y = Math.random() * H;
+  this.r = Math.random() * 1.4 + .4;
+  this.vx = (Math.random() - .5) * .3;
+  this.vy = (Math.random() - .5) * .3;
+  this.alpha = Math.random() * .4 + .1;
+}
+for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(123,92,245,${p.alpha})`;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W;
+    if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H;
+    if (p.y > H) p.y = 0;
+  });
+
+  // connect close particles
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 130) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(123,92,245,${.08 * (1 - dist/130)})`;
+        ctx.lineWidth = .5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: .15 });
+reveals.forEach(r => obs.observe(r));
+</script>
+</body>
+</html>

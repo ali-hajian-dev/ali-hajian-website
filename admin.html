@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>پنل مدیریت | علی حاجیان</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06080F;--card:#0F1628;--card2:#141C2B;
+  --violet:#8B6EF5;--violet2:#6448D4;--cyan:#2DE8D0;
+  --text:#EDF0FA;--muted:#6B7591;--muted2:#9BA5BE;
+  --border:rgba(139,110,245,.16);--border2:rgba(139,110,245,.32);
+  --red:#F06292;--green:#4ADE80;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;width:100%;max-width:400px;text-align:center}
+.login-logo{font-size:2.5rem;margin-bottom:16px}
+.login-box h1{font-size:1.4rem;font-weight:900;margin-bottom:8px}
+.login-box p{color:var(--muted2);font-size:.88rem;margin-bottom:32px}
+.input{width:100%;padding:14px 18px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:.95rem;outline:none;transition:border-color .25s;margin-bottom:14px}
+.input:focus{border-color:var(--violet)}
+.input::placeholder{color:var(--muted)}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-size:.95rem;font-weight:700;transition:all .25s}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--violet2));color:#fff;box-shadow:0 8px 28px rgba(139,110,245,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(139,110,245,.5)}
+.login-err{color:var(--red);font-size:.83rem;margin-top:10px;display:none}
+
+#panel{display:none}
+header.panel-header{position:sticky;top:0;z-index:100;background:rgba(6,8,15,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;justify-content:space-between;align-items:center}
+.header-logo{font-weight:900;font-size:1.1rem;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-nav{display:flex;gap:10px}
+.tab-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s}
+.tab-btn.active,.tab-btn:hover{background:rgba(139,110,245,.15);color:var(--text);border-color:var(--border2)}
+.logout-btn{padding:8px 18px;border-radius:10px;border:1px solid rgba(240,98,146,.25);background:transparent;color:var(--red);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s}
+.logout-btn:hover{background:rgba(240,98,146,.1)}
+
+.panel-body{max-width:960px;margin:0 auto;padding:36px 24px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+.stat-c{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px 20px;text-align:center}
+.stat-c .num{font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-c .lbl{color:var(--muted);font-size:.78rem;margin-top:4px}
+
+.section-title{font-size:1.3rem;font-weight:900;margin-bottom:24px;letter-spacing:-.02em}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.82rem;font-weight:600;color:var(--muted2)}
+.form-input{padding:13px 16px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:.92rem;outline:none;transition:border-color .25s}
+.form-input:focus{border-color:var(--violet)}
+.form-input::placeholder{color:var(--muted)}
+textarea.form-input{resize:vertical;min-height:140px;line-height:1.7}
+select.form-input option{background:var(--card)}
+.form-actions{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-sm{padding:12px 26px;border-radius:11px;border:none;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:700;transition:all .22s}
+.btn-save{background:linear-gradient(135deg,var(--violet),var(--violet2));color:#fff;box-shadow:0 6px 22px rgba(139,110,245,.3)}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(139,110,245,.45)}
+.btn-clear{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted2)}
+.btn-clear:hover{background:rgba(255,255,255,.1);color:var(--text)}
+.save-msg{font-size:.82rem;color:var(--green);display:none}
+.loading-msg{font-size:.82rem;color:var(--muted2);display:none}
+
+.posts-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.search-input{padding:10px 16px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:.88rem;width:240px;outline:none}
+.search-input:focus{border-color:var(--violet)}
+.posts-list{display:flex;flex-direction:column;gap:12px}
+.post-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 22px;display:flex;align-items:flex-start;gap:16px;transition:border-color .25s}
+.post-item:hover{border-color:var(--border2)}
+.post-info{flex:1;min-width:0}
+.post-cat-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 11px;border-radius:100px;margin-bottom:8px;background:rgba(139,110,245,.12);border:1px solid rgba(139,110,245,.22);color:var(--violet)}
+.post-title-li{font-size:.98rem;font-weight:700;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-meta{font-size:.78rem;color:var(--muted)}
+.post-actions{display:flex;gap:8px;flex-shrink:0}
+.action-btn{padding:7px 14px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:600;transition:all .2s}
+.btn-edit{background:rgba(139,110,245,.15);color:var(--violet)}
+.btn-edit:hover{background:rgba(139,110,245,.28)}
+.btn-del{background:rgba(240,98,146,.12);color:var(--red)}
+.btn-del:hover{background:rgba(240,98,146,.25)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .emoji{font-size:3rem;margin-bottom:16px}
+
+/* loading spinner */
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--violet);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:22px;padding:36px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:1.1rem;font-weight:900;margin-bottom:24px}
+.modal-actions{margin-top:22px;display:flex;gap:10px;justify-content:flex-end}
+
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .login-box{padding:32px 22px}
+  .header-nav{gap:6px}
+  .tab-btn{padding:7px 12px;font-size:.78rem}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <h1>پنل مدیریت</h1>
+    <p>علی حاجیان | ورود مدیر</p>
+    <input class="input" type="text" id="user-inp" placeholder="نام کاربری" autocomplete="username"/>
+    <input class="input" type="password" id="pass-inp" placeholder="رمز عبور" autocomplete="current-password"/>
+    <button class="btn btn-primary" id="login-btn">ورود به پنل</button>
+    <p class="login-err" id="login-err">نام کاربری یا رمز عبور اشتباه است</p>
+  </div>
+</div>
+
+<div id="panel">
+  <header class="panel-header">
+    <div class="header-logo">⚡ پنل مدیریت</div>
+    <div class="header-nav">
+      <button class="tab-btn active" data-tab="dashboard">داشبورد</button>
+      <button class="tab-btn" data-tab="new-post">پست جدید</button>
+      <button class="tab-btn" data-tab="posts">مدیریت پست‌ها</button>
+      <button class="logout-btn" id="logout-btn">خروج</button>
+    </div>
+  </header>
+
+  <div class="panel-body">
+
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="section-title">خوش آمدید، علی جان 👋</div>
+      <div class="stats-row">
+        <div class="stat-c"><div class="num" id="stat-total">—</div><div class="lbl">کل پست‌ها</div></div>
+        <div class="stat-c"><div class="num" id="stat-published">—</div><div class="lbl">منتشرشده</div></div>
+        <div class="stat-c"><div class="num" id="stat-draft">—</div><div class="lbl">پیش‌نویس</div></div>
+      </div>
+      <div class="form-card">
+        <p style="color:var(--muted2);line-height:1.85;font-size:.93rem">
+          پست‌ها روی <strong style="color:var(--violet)">Firebase</strong> ذخیره می‌شوند و برای همه بازدیدکنندگان قابل مشاهده‌اند.<br/>
+          پست‌های منتشرشده در صفحه <a href="blog.html" target="_blank" style="color:var(--cyan)">blog.html</a> نمایش داده می‌شوند.
+        </p>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-new-post">
+      <div class="section-title">افزودن پست جدید</div>
+      <div class="form-card">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>عنوان پست *</label>
+            <input class="form-input" type="text" id="f-title" placeholder="عنوان پست را بنویسید..."/>
+          </div>
+          <div class="form-group">
+            <label>دسته‌بندی</label>
+            <select class="form-input" id="f-cat">
+              <option>عمومی</option><option>ربات‌سازی</option><option>پردازش صدا</option>
+              <option>تولید محتوا</option><option>طراحی</option><option>موزیک</option>
+              <option>فناوری</option><option>پروژه</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>وضعیت</label>
+            <select class="form-input" id="f-status">
+              <option value="published">منتشر</option>
+              <option value="draft">پیش‌نویس</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>خلاصه</label>
+            <input class="form-input" type="text" id="f-summary" placeholder="یک جمله کوتاه درباره این پست..."/>
+          </div>
+          <div class="form-group full">
+            <label>متن کامل پست *</label>
+            <textarea class="form-input" id="f-content" placeholder="محتوای پست را اینجا بنویسید..." style="min-height:220px"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-sm btn-save" id="save-btn">ذخیره در Firebase</button>
+          <button class="btn-sm btn-clear" id="clear-btn">پاک کردن</button>
+          <span class="loading-msg" id="loading-msg"><span class="spinner"></span> در حال ذخیره...</span>
+          <span class="save-msg" id="save-msg">✓ پست با موفقیت ذخیره شد!</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-posts">
+      <div class="posts-header">
+        <div class="section-title" style="margin-bottom:0">مدیریت پست‌ها</div>
+        <input class="search-input" type="text" id="search-inp" placeholder="جستجو..."/>
+      </div>
+      <div id="list-loading" style="text-align:center;padding:40px;color:var(--muted2)"><span class="spinner"></span></div>
+      <div class="posts-list" id="posts-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">ویرایش پست</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>عنوان</label><input class="form-input" type="text" id="e-title"/></div>
+      <div class="form-group">
+        <label>دسته‌بندی</label>
+        <select class="form-input" id="e-cat">
+          <option>عمومی</option><option>ربات‌سازی</option><option>پردازش صدا</option>
+          <option>تولید محتوا</option><option>طراحی</option><option>موزیک</option>
+          <option>فناوری</option><option>پروژه</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>وضعیت</label>
+        <select class="form-input" id="e-status">
+          <option value="published">منتشر</option>
+          <option value="draft">پیش‌نویس</option>
+        </select>
+      </div>
+      <div class="form-group full"><label>خلاصه</label><input class="form-input" type="text" id="e-summary"/></div>
+      <div class="form-group full"><label>متن کامل</label><textarea class="form-input" id="e-content" style="min-height:180px"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-clear" id="modal-cancel">انصراف</button>
+      <button class="btn-sm btn-save" id="modal-save">ذخیره تغییرات</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc,
+  doc, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// ── Firebase init ──
+const app = initializeApp({
+  apiKey: "AIzaSyAMr_bLGfmYGWmhOqXw85rKDPcTH9tWdcU",
+  authDomain: "baleai-fc659.firebaseapp.com",
+  projectId: "baleai-fc659",
+  storageBucket: "baleai-fc659.firebasestorage.app",
+  messagingSenderId: "538263689154",
+  appId: "1:538263689154:web:d8d4fc393b18b43349685b"
+});
+const db = getFirestore(app);
+const COL = 'posts';
+
+// ── Auth ──
+const ADMIN_USER = 'ali';
+const ADMIN_PASS = 'hajian1402';
+let allPosts = [];
+let editId   = null;
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('pass-inp').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('logout-btn').addEventListener('click', () => {
+  document.getElementById('panel').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+});
+
+function doLogin(){
+  const u = document.getElementById('user-inp').value.trim();
+  const p = document.getElementById('pass-inp').value.trim();
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('panel').style.display='block';
+    loadPosts();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+
+// ── Tabs ──
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='posts') renderList();
+    if(btn.dataset.tab==='dashboard') updateStats();
+  });
+});
+
+// ── Load posts from Firebase ──
+async function loadPosts(){
+  try {
+    const q = query(collection(db, COL), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    allPosts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    updateStats();
+    renderList();
+    document.getElementById('list-loading').style.display='none';
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// ── Save new post ──
+document.getElementById('save-btn').addEventListener('click', async () => {
+  const title   = document.getElementById('f-title').value.trim();
+  const content = document.getElementById('f-content').value.trim();
+  if(!title||!content){ alert('عنوان و متن پست الزامی است'); return; }
+
+  document.getElementById('loading-msg').style.display='inline-flex';
+  document.getElementById('save-btn').disabled=true;
+  try {
+    const dateStr = new Date().toLocaleDateString('fa-IR');
+    const ref = await addDoc(collection(db, COL), {
+      title,
+      summary: document.getElementById('f-summary').value.trim(),
+      content,
+      cat:     document.getElementById('f-cat').value,
+      status:  document.getElementById('f-status').value,
+      date:    dateStr,
+      createdAt: serverTimestamp()
+    });
+    allPosts.unshift({ id: ref.id, title, content,
+      summary: document.getElementById('f-summary').value.trim(),
+      cat: document.getElementById('f-cat').value,
+      status: document.getElementById('f-status').value,
+      date: dateStr });
+    clearForm();
+    updateStats();
+    document.getElementById('loading-msg').style.display='none';
+    const msg = document.getElementById('save-msg');
+    msg.style.display='inline'; setTimeout(()=>msg.style.display='none',3000);
+  } catch(e){
+    alert('خطا در ذخیره‌سازی: '+e.message);
+  }
+  document.getElementById('save-btn').disabled=false;
+  document.getElementById('loading-msg').style.display='none';
+});
+
+document.getElementById('clear-btn').addEventListener('click', clearForm);
+function clearForm(){
+  ['f-title','f-summary','f-content'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-cat').value='عمومی';
+  document.getElementById('f-status').value='published';
+}
+
+// ── Render list ──
+function renderList(){
+  const q = (document.getElementById('search-inp')?.value||'').trim();
+  const posts = q ? allPosts.filter(p=>p.title.includes(q)||p.content.includes(q)) : allPosts;
+  const el = document.getElementById('posts-list');
+  document.getElementById('list-loading').style.display='none';
+  if(!posts.length){
+    el.innerHTML=`<div class="empty-state"><div class="emoji">📭</div><p>هیچ پستی یافت نشد</p></div>`;
+    return;
+  }
+  el.innerHTML = posts.map(p=>`
+    <div class="post-item">
+      <div class="post-info">
+        <span class="post-cat-badge">${p.cat}</span>
+        <div class="post-title-li">${p.title}</div>
+        <div class="post-meta">${p.date||''} · ${p.status==='published'?'<span style="color:var(--green)">منتشر</span>':'<span style="color:var(--muted)">پیش‌نویس</span>'}</div>
+      </div>
+      <div class="post-actions">
+        <button class="action-btn btn-edit" data-id="${p.id}">ویرایش</button>
+        <button class="action-btn btn-del"  data-id="${p.id}">حذف</button>
+      </div>
+    </div>`).join('');
+
+  el.querySelectorAll('.btn-edit').forEach(b=>b.addEventListener('click',()=>openEdit(b.dataset.id)));
+  el.querySelectorAll('.btn-del').forEach(b=>b.addEventListener('click',()=>delPost(b.dataset.id)));
+}
+document.getElementById('search-inp').addEventListener('input', renderList);
+
+// ── Delete ──
+async function delPost(id){
+  if(!confirm('آیا مطمئنید؟')) return;
+  await deleteDoc(doc(db, COL, id));
+  allPosts = allPosts.filter(p=>p.id!==id);
+  renderList(); updateStats();
+}
+
+// ── Edit ──
+function openEdit(id){
+  const p = allPosts.find(x=>x.id===id);
+  if(!p) return;
+  editId=id;
+  document.getElementById('e-title').value   = p.title;
+  document.getElementById('e-summary').value = p.summary||'';
+  document.getElementById('e-content').value = p.content;
+  document.getElementById('e-cat').value     = p.cat;
+  document.getElementById('e-status').value  = p.status;
+  document.getElementById('edit-modal').classList.add('open');
+}
+document.getElementById('modal-cancel').addEventListener('click',()=>{ document.getElementById('edit-modal').classList.remove('open'); editId=null; });
+document.getElementById('edit-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget){ document.getElementById('edit-modal').classList.remove('open'); editId=null; }});
+document.getElementById('modal-save').addEventListener('click', async ()=>{
+  if(!editId) return;
+  const updated = {
+    title:   document.getElementById('e-title').value.trim(),
+    summary: document.getElementById('e-summary').value.trim(),
+    content: document.getElementById('e-content').value.trim(),
+    cat:     document.getElementById('e-cat').value,
+    status:  document.getElementById('e-status').value,
+  };
+  await updateDoc(doc(db, COL, editId), updated);
+  const idx = allPosts.findIndex(p=>p.id===editId);
+  if(idx>-1) allPosts[idx]={...allPosts[idx],...updated};
+  document.getElementById('edit-modal').classList.remove('open');
+  editId=null;
+  renderList(); updateStats();
+});
+
+// ── Stats ──
+function updateStats(){
+  document.getElementById('stat-total').textContent     = allPosts.length;
+  document.getElementById('stat-published').textContent = allPosts.filter(p=>p.status==='published').length;
+  document.getElementById('stat-draft').textContent     = allPosts.filter(p=>p.status==='draft').length;
+}
+</script>
+</body>
+</html>
